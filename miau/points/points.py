@@ -38,3 +38,17 @@ def minus1(bot, update):
 
     word = matching[0]
     bot.sendMessage(chat_id=update.message.chat_id, text="-1 para " + word)
+
+def trainPlus1(bot, update, args):
+    if len(args) > 0:
+        word = ' '.join(args)
+        with open(PLUS1_FILEPATH, 'a') as file:
+            file.write(word + "\n")
+        bot.sendMessage(chat_id=update.message.chat_id, text="Miauuu :)")
+
+def trainMinus1(bot, update, args):
+    if len(args) > 0:
+        word = ' '.join(args)
+        with open(MINUS1_FILEPATH, 'a') as file:
+            file.write(word + "\n")
+        bot.sendMessage(chat_id=update.message.chat_id, text="Miauuu :(")
