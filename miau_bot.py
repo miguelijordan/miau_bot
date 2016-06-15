@@ -2,6 +2,7 @@ from local_constants import TOKEN
 
 from miau.petting import petting
 from miau.help import help
+from miau.points import points
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -26,6 +27,12 @@ dispatcher.add_handler(help_handler)
 
 petting_handler = CommandHandler('petting', petting.petting)
 dispatcher.add_handler(petting_handler)
+
+pointsPlus1_handler = MessageHandler([points.filterPlus1], points.plus1)
+dispatcher.add_handler(pointsPlus1_handler)
+
+pointsMinus1_handler = MessageHandler([points.filterMinus1], points.minus1)
+dispatcher.add_handler(pointsMinus1_handler)
 
 updater.start_polling()
 updater.idle()
