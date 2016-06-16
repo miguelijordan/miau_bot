@@ -28,10 +28,6 @@ RESULTS = { (GUU, GUU): DRAW,
             (CHOKI, PAA): WIN,
             (CHOKI, CHOKI): DRAW }
 
-# Initialization
-players_results = dict()
-
-
 # game methods
 def getResult(choice_playerA, choice_playerB):
     return RESULTS[(choice_playerA, choice_playerB)]
@@ -48,8 +44,7 @@ def getRanking(results):
     return sorted(results.items(), key=lambda r: compareResults(r[1]), reverse=True)
 
 def tabulateRanking(ranking):
-    return tabulate.tabulate(sd, headers=["Player", "W  D  L"])
-
+    return tabulate.tabulate(ranking, headers=["Player", "W  D  L"])
 
 # persistence methods
 def saveResults(results):
@@ -74,19 +69,38 @@ def getPlayerChoice(arg):
 
 def jankenpon(bot, update, args):
     if len(args) == 0:
-        bot.sendMessage(chat_id=update.message.chat_id, text="Choose between " + str(GUUS) + ", or " + str(PAAS) + ", or " + str(CHOKIS))
+        players_results = loadResults()
+        ranking = getRanking(players_results)
+        bot.sendMessage(chat_id=update.message.chat_id, text="Elige entre " + str(GUUS) + ", or " + str(PAAS) + ", or " + str(CHOKIS) +
+        #bot.sendMessage(chat_id=update.message.chat_id, text="Choose between (" + GUU  + ", " + PAA + ", " + CHOKI + ")" +
+        "\nRANKING:\n" +
+        tabulateRanking(ranking)
+        )
     elif len(args) > 0:
         player_choice = getPlayerChoice(args[0])
         if player_choice is not None:
             miau_choice = getMiauChoice()
             result = getResult(player_choice, miau_choice)
             player_name = update.message.from_user.first_name
+            user_name = update.message.from_user.username
+
+            players_results = loadResults()
+            player_res = [0,0,0]
+            if player_name in players_results:
+                player_res = players_results[player_name]
+
             if result == 1:
                 winner = player_name + " gana!"
+                player_res[0] += 1
             elif result == -1:
                 winner = "Miau gana!!!"
+                player_res[2] += 1
             else:
                 winner = "Empate!"
+                player_res[1] += 1
+
+            players_results[player_name] = player_res
+            saveResults(players_results)
 
             bot.sendMessage(chat_id=update.message.chat_id, text=player_name + " " + player_choice + " - " + miau_choice + " Miau\n" + winner)
         else:
