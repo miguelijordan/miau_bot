@@ -3,10 +3,13 @@ from local_constants import TOKEN
 from miau.petting import petting
 from miau.help import help
 from miau.points import points
+from miau.jankenpon import jankenpon
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
 from telegram.ext import MessageHandler, Filters
+from telegram.ext import InlineQueryHandler
+
 import logging
 
 
@@ -28,17 +31,20 @@ dispatcher.add_handler(help_handler)
 petting_handler = CommandHandler('petting', petting.petting)
 dispatcher.add_handler(petting_handler)
 
-pointsPlus1_handler = MessageHandler([points.filterPlus1], points.plus1)
-dispatcher.add_handler(pointsPlus1_handler)
-
-pointsMinus1_handler = MessageHandler([points.filterMinus1], points.minus1)
-dispatcher.add_handler(pointsMinus1_handler)
+jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
+dispatcher.add_handler(jankenpon_handler)
 
 trainPlus1_hanlder = CommandHandler('+1', points.trainPlus1, pass_args=True)
 dispatcher.add_handler(trainPlus1_hanlder)
 
 trainMinus1_hanlder = CommandHandler('-1', points.trainMinus1, pass_args=True)
 dispatcher.add_handler(trainMinus1_hanlder)
+
+pointsPlus1_handler = MessageHandler([points.filterPlus1], points.plus1)
+dispatcher.add_handler(pointsPlus1_handler)
+
+pointsMinus1_handler = MessageHandler([points.filterMinus1], points.minus1)
+dispatcher.add_handler(pointsMinus1_handler)
 
 updater.start_polling()
 updater.idle()
