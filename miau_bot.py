@@ -4,6 +4,7 @@ from miau.petting import petting
 from miau.help import help
 from miau.points import points
 from miau.jankenpon import jankenpon
+from miau.jajejijoju import jajejijoju
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -33,6 +34,9 @@ dispatcher.add_handler(petting_handler)
 
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
+
+jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
+dispatcher.add_handler(jajejijoju_handler)
 
 trainPlus1_hanlder = CommandHandler('+1', points.trainPlus1, pass_args=True)
 dispatcher.add_handler(trainPlus1_hanlder)
