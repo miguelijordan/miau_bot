@@ -5,6 +5,7 @@ from miau.help import help
 from miau.points import points
 from miau.jankenpon import jankenpon
 from miau.jajejijoju import jajejijoju
+from miau.weather import weather
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -22,7 +23,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 def start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="Miauuuu!!!")
 
-
 start_handler = CommandHandler('hola', start)
 dispatcher.add_handler(start_handler)
 
@@ -31,6 +31,9 @@ dispatcher.add_handler(help_handler)
 
 petting_handler = CommandHandler('petting', petting.petting)
 dispatcher.add_handler(petting_handler)
+
+weather_handler = CommandHandler('weather', weather.weather)
+dispatcher.add_handler(weather_handler)
 
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
