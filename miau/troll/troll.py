@@ -37,7 +37,6 @@ def filter(message):
     text = message.text
     for pattern in trolls.keys():
         if re.search(pattern, text) is not None:
-            print("false")
             return True
     return False
 
@@ -45,7 +44,7 @@ def filter_user(message):
     return  message.from_user.first_name == "José Miguel" or \
             message.from_user.first_name == "Gustavo" or \
             message.from_user.first_name == "Alberto" or \
-            message.from_user.first_name == "Álvaro"
+            message.from_user.first_name == "Álvaro Manuel"
 
 def filter_input(message):
     print("filter_input")
