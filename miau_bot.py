@@ -6,6 +6,7 @@ from miau.points import points
 from miau.jankenpon import jankenpon
 from miau.jajejijoju import jajejijoju
 from miau.weather import weather
+from miau.troll import troll
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -17,6 +18,7 @@ import logging
 
 updater = Updater(token=TOKEN)
 dispatcher = updater.dispatcher
+job_queue = updater.job_queue
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -34,9 +36,18 @@ dispatcher.add_handler(petting_handler)
 
 weather_handler = CommandHandler('weather', weather.weather)
 dispatcher.add_handler(weather_handler)
+#job_queue.put(weather.weather_timed, 86400, next_t=22500)
 
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
+
+troll_handler = MessageHandler([troll.filter], troll.troll)
+dispatcher.add_handler(troll_handler)
+
+# Troll command
+updater.dispatcher.add_handler(CommandHandler('troll', troll.define_troll))
+# The pattern
+updater.dispatcher.add_handler(MessageHandler([troll.filter_input], troll.entered_input))
 
 jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
 dispatcher.add_handler(jajejijoju_handler)
