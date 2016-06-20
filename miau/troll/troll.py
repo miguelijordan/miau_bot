@@ -3,7 +3,8 @@ import pickle       # Python object serialization
 from telegram import ForceReply
 
 TROLLS_FILEPATH = "miau/troll/resources/trolls.dat"
-MENU, AWAIT_REGEX, AWAIT_ANSWER = range(3)
+TROLLS_FILEPATH2 = "miau/troll/resources/trolls2.dat"
+MENU, AWAIT_REGEX, AWAIT_ANSWER, AWAIT_MANAGE = range(4)
 
 # States are saved in a dict that maps chat_id -> state
 state = dict()
@@ -33,7 +34,6 @@ def troll(bot, update):
             return None
 
 def filter(message):
-    print("troll.filter")
     text = message.text
     for pattern in trolls.keys():
         if re.search(pattern, text) is not None:
@@ -46,11 +46,15 @@ def filter_user(message):
             message.from_user.first_name == "Alberto" or \
             message.from_user.first_name == "Álvaro Manuel"
 
-def filter_input(message):
-    print("filter_input")
-    chat_id = message.chat_id
-    s = state.get(chat_id, MENU)
+def filter_input_define_troll(message):
+    user_id =   message.from_user.id
+    s = state.get(user_id, MENU)
     return s == AWAIT_REGEX or s == AWAIT_ANSWER
+
+def filter_input_manage_troll(message):
+    user_id = message.from_user.id
+    s = state.get(user_id, MENU)
+    return s == AWAIT_MANAGE
 
 # Example handler. Will be called on the /set command and on regular messages
 def define_troll(bot, update):
@@ -93,3 +97,58 @@ def entered_input(bot, update):
         del context[user_id]
 
         bot.sendMessage(chat_id, text="Miauuu :)")
+
+def delete_troll(bot, update):
+    chat_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    chat_state = state.get(user_id, MENU)
+
+    # Check if we are waiting for input
+    if chat_state == AWAIT_MANAGE:
+        trolls_list = context[user_id]
+        regex_id = update.message.text
+        try:
+            regex_id = int(regex_id)
+        except ValueError:
+            regex_id = -1
+
+        if regex_id >= 0 and regex_id < len(trolls_list):
+            trolls_list.pop(regex_id)
+
+            # Save trolls (we have to pass from list to dict)
+            i = iter(trolls_list)
+            trolls = dict(i)
+            saveTrolls(trolls)
+
+            bot.sendMessage(chat_id, text="Miauuu :)")
+        else:
+            bot.sendMessage(chat_id, text="Miauuu :(")
+
+        del state[user_id]
+        del context[user_id]
+
+def manage_trolls(bot, update):
+    if filter_user(update.message):
+        chat_id = update.message.chat_id
+        user_id = update.message.from_user.id
+        user_state = state.get(chat_id, MENU)
+        user_name = update.message.from_user.first_name
+
+        trolls = loadTrolls()
+        if len(trolls) == 0:
+            bot.sendMessage(chat_id=update.message.chat_id, text="Nothing to manage :)")
+            return
+
+        trolls_list = list(trolls.items())
+        results = ""
+        for i in range(len(trolls_list)):
+            results += str(i) + ": " + trolls_list[i][0] + " -> " + trolls_list[i][1] + "\n"
+
+        context[user_id] = trolls_list
+        bot.sendMessage(chat_id=update.message.chat_id, text=results)
+
+        if user_state == MENU:
+            state[user_id] = AWAIT_MANAGE  # set the state
+            bot.sendMessage(chat_id,
+                text="Please select id of regex to delete it or anything else to do nothing",
+                reply_markup=ForceReply())

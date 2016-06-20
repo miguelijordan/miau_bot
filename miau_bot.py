@@ -41,13 +41,19 @@ dispatcher.add_handler(weather_handler)
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
 
+# define troll command
+updater.dispatcher.add_handler(CommandHandler('troll', troll.define_troll))
+# manage troll command
+updater.dispatcher.add_handler(CommandHandler('managetrolls', troll.manage_trolls))
+# filter for define define command
+updater.dispatcher.add_handler(MessageHandler([troll.filter_input_define_troll], troll.entered_input))
+# filter for manage troll command
+updater.dispatcher.add_handler(MessageHandler([troll.filter_input_manage_troll], troll.delete_troll))
+# filter for troll functionality
 troll_handler = MessageHandler([troll.filter], troll.troll)
+# Add troll handler
 dispatcher.add_handler(troll_handler)
 
-# Troll command
-updater.dispatcher.add_handler(CommandHandler('troll', troll.define_troll))
-# The pattern
-updater.dispatcher.add_handler(MessageHandler([troll.filter_input], troll.entered_input))
 
 jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
 dispatcher.add_handler(jajejijoju_handler)
