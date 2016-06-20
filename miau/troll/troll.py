@@ -47,7 +47,7 @@ def filter_user(message):
             message.from_user.first_name == "Álvaro Manuel"
 
 def filter_input_define_troll(message):
-    user_id =   message.from_user.id
+    user_id =  message.from_user.id
     s = state.get(user_id, MENU)
     return s == AWAIT_REGEX or s == AWAIT_ANSWER
 
@@ -89,7 +89,7 @@ def entered_input(bot, update):
         pattern = context.get(user_id, None)
         answer = update.message.text
 
-        global trolls
+        trolls = loadTrolls()
         trolls[pattern] = answer
         saveTrolls(trolls)
 
@@ -124,6 +124,7 @@ def delete_troll(bot, update):
         else:
             bot.sendMessage(chat_id, text="Miauuu :(")
 
+        trolls = loadTrolls()
         del state[user_id]
         del context[user_id]
 
