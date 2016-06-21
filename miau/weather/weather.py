@@ -40,6 +40,22 @@ WEATHERS = {THUNDERSTOMS: SHOWERS_IMG,
             SUNNY: SUNNY_IMG,
             }
 
+#chat_id_ministericos = "-9977534"
+
+# def weather_timed(bot):
+#     weather_com_result = pywapi.get_weather_from_weather_com(MALAGA_CITY_CODE)
+#     weather_text = weather_com_result['current_conditions']['text']
+#
+#     # Filter the text
+#     weather_text = weather_text.lower()
+#     if weather_text.startswith('PM ') or weather_text.startswith('AM '):
+#         weather_text = weather_text[3:]
+#
+#     if weather_text in WEATHERS:
+#         image_weather = WEATHERS[weather_text]
+#         image = open(image_weather, "rb")
+#         bot.sendPhoto(chat_id=chat_id_ministericos, photo=image)
+
 def weather(bot, update):
     weather_com_result = pywapi.get_weather_from_weather_com(MALAGA_CITY_CODE)
     weather_text = weather_com_result['current_conditions']['text']
