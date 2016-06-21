@@ -14,6 +14,7 @@ def filter(text, strings):
     return matchings
 
 def filterPlus1(message):
+    print("filterPlus1")
     strings = getStrings(PLUS1_FILEPATH)
     matching = filter(message.text, strings)
     return matching != []
