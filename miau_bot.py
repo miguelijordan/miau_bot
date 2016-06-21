@@ -6,7 +6,7 @@ from miau.points import points
 from miau.jankenpon import jankenpon
 from miau.jajejijoju import jajejijoju
 from miau.weather import weather
-from miau.troll import troll
+from miau.regexs import regexs
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -41,19 +41,16 @@ dispatcher.add_handler(weather_handler)
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
 
-# define troll command
-updater.dispatcher.add_handler(CommandHandler('troll', troll.define_troll))
-# manage troll command
-updater.dispatcher.add_handler(CommandHandler('managetrolls', troll.manage_trolls))
-# filter for define define command
-updater.dispatcher.add_handler(MessageHandler([troll.filter_input_define_troll], troll.entered_input))
-# filter for manage troll command
-updater.dispatcher.add_handler(MessageHandler([troll.filter_input_manage_troll], troll.delete_troll))
-# filter for troll functionality
-troll_handler = MessageHandler([troll.filter], troll.troll)
-# Add troll handler
-dispatcher.add_handler(troll_handler)
-
+# define regexs command
+dispatcher.add_handler(CommandHandler('regex', regexs.defineRegex))
+# manage regexs command
+dispatcher.add_handler(CommandHandler('manageregexs', regexs.manageRegexs))
+# filter for define regexs command
+dispatcher.add_handler(MessageHandler([regexs.filterInputDefineRegex], regexs.enteredRegex))
+# filter for manage regexs command
+dispatcher.add_handler(MessageHandler([regexs.filterInputManageRegexs], regexs.deleteRegex))
+# filter for regexs functionality
+dispatcher.add_handler(MessageHandler([regexs.filter], regexs.regex))
 
 jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
 dispatcher.add_handler(jajejijoju_handler)
