@@ -1,4 +1,5 @@
-from local_constants import TOKEN
+from miau_auth import TOKEN
+import miau_constants
 
 from miau.petting import petting
 from miau.help import help
