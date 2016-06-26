@@ -1,5 +1,4 @@
-from miau_auth import TOKEN
-import miau_constants
+from miau.constants import auth
 
 from miau.petting import petting
 from miau.help import help
@@ -17,7 +16,7 @@ from telegram.ext import InlineQueryHandler
 import logging
 
 
-updater = Updater(token=TOKEN)
+updater = Updater(token=auth.TOKEN)
 dispatcher = updater.dispatcher
 job_queue = updater.job_queue
 

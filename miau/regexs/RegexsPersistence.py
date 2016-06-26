@@ -1,16 +1,12 @@
 from pymongo import MongoClient     # Python driver for MongoDB
 import re                           # Regular expression operations
-
-# CONSTANTS
-MIAU_DB = 'miau-db'     # Data base
-REGEXS = 'regexs'       # Regexs collection
-
+from miau.constants import constants
 
 class RegexsPersistence():
     def __init__(self):
         self.client = MongoClient()
-        self.db = self.client[MIAU_DB]
-        self.collection = self.db[REGEXS]
+        self.db = self.client[constants.MIAU_DB]
+        self.collection = self.db[constants.REGEXS]
         self.regexs = self.__getCompiledRegexs()
 
     def addRegex(self, regex):
