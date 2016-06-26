@@ -36,3 +36,7 @@ class RegexsPersistence():
         for r in regexs:
             r['compiledRegex'] = re.compile(r['pattern'], re.IGNORECASE)
         return regexs
+
+    def clearRegexs(self):
+        self.collection.drop()
+        self.regexs = []
