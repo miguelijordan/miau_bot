@@ -1,31 +1,26 @@
-import re           # Regular expression operations
-import pickle       # Python object serialization
+import re                                   # Regular expression operations
+import pickle                               # Python object serialization
+import math                                 # Mathematical functions
+import random                               # Generate pseudo-random numbers
 from telegram import ForceReply
-from miau.utils import Persistence
+from miau.regexs import RegexsPersistence
 
-DATA_FILEPATH = "miau/regexs/resources/regexs.dat"
+MAX_MESSAGE_LENGTH = 4096
 MENU, AWAIT_REGEX, AWAIT_ANSWER, AWAIT_MANAGE = range(4)
 ALLOWED_USERS = ["José Miguel", "Gustavo", "Alberto", "Álvaro Manuel"]
-
-# Persistence mechanism
-persistence = Persistence.Persistence(DATA_FILEPATH)
 
 # States are saved in a dict that maps chat_id -> state
 state = dict()
 # Sometimes you need to save data temporarily
 context = dict()
 # Data
-regexs = persistence.load()
+regexs = RegexsPersistence.RegexsPersistence()
 
 def isUserAllowed(first_name):
     return first_name in ALLOWED_USERS
 
-def filter(message):
-    text = message.text
-    for pattern in regexs.keys():
-        if re.search(pattern, text) is not None:
-            return True
-    return False
+def filterPattern(message):
+    return regexs.getMatchingRegexs(message.text) != []
 
 def filterInputDefineRegex(message):
     user_id =  message.from_user.id
@@ -49,21 +44,30 @@ def enteredRegex(bot, update):
 
         # Save the user id and the answer to context
         context[user_id] = update.message.text
-        bot.sendMessage(chat_id,
-                        text="Please enter your answer",
-                        reply_markup=ForceReply())
+        bot.sendMessage(chat_id, "Please enter your answer", reply_markup=ForceReply())
 
     elif chat_state == AWAIT_ANSWER:
         pattern = context.get(user_id, None)
         answer = update.message.text
 
-        regexs[pattern] = answer
-        persistence.save(regexs)
+        regexs.addRegex({'pattern':pattern, 'answer':answer})
 
         del state[user_id]
         del context[user_id]
 
-        bot.sendMessage(chat_id, text="Miauuu :)")
+        bot.sendMessage(chat_id, "Miauuu :)")
+
+def defineRegex(bot, update):
+    """ Define a new regex -> answer """
+    chat_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    user_name = update.message.from_user.first_name
+    user_state = state.get(chat_id, MENU)
+
+    if isUserAllowed(user_name):
+        if user_state == MENU:
+            state[user_id] = AWAIT_REGEX  # set the state
+            bot.sendMessage(chat_id, "Please enter your regex", reply_markup=ForceReply())
 
 def deleteRegex(bot, update):
     """ Receive the id of the regex to delete """
@@ -73,22 +77,16 @@ def deleteRegex(bot, update):
 
     # Check if we are waiting for input
     if chat_state == AWAIT_MANAGE:
-        data_list = context[user_id]
+        allRegexs = context[user_id]
         regex_id = update.message.text
         try:
             regex_id = int(regex_id)
         except ValueError:
             regex_id = -1
 
-        if regex_id >= 0 and regex_id < len(data_list):
-            data_list.pop(regex_id)
-
-            # Save regexs (we have to pass from list to dict)
-            i = iter(data_list)
-            data = dict(i)
-            persistence.save(data)
-            global regexs
-            regexs = data
+        if regex_id >= 0 and regex_id < len(allRegexs):
+            regex = allRegexs[regex_id]
+            regexs.deleteRegex(regex)
 
             bot.sendMessage(chat_id, text="Miauuu :)")
         else:
@@ -97,48 +95,44 @@ def deleteRegex(bot, update):
         del state[user_id]
         del context[user_id]
 
-def defineRegex(bot, update):
-    """ Define a new regex -> answer """
-    chat_id = update.message.chat_id
-    user_id = update.message.from_user.id
-    user_state = state.get(chat_id, MENU)
-
-    if isUserAllowed(update.message.from_user.first_name):
-        if user_state == MENU:
-            state[user_id] = AWAIT_REGEX  # set the state
-            bot.sendMessage(chat_id,
-                            text="Please enter your regex",
-                            reply_markup=ForceReply())
+def _showRegexs(bot, chat_id, allRegexs):
+    message = ""
+    i = 0
+    allRegexs = regexs.getRegexs()
+    for regex in allRegexs:
+        m = str(i) + ": " + regex['pattern'] + " -> " + regex['answer'] + "\n"
+        if len(message) + len(m) <= MAX_MESSAGE_LENGTH:
+            message += m
+        else:
+            bot.sendMessage(chat_id, message)
+            message = m
+        i += 1
+    bot.sendMessage(chat_id, message)
 
 def manageRegexs(bot, update):
     """ Manage the regexs as a list """
-    if isUserAllowed(update.message.from_user.first_name):
+    user_name = update.message.from_user.first_name
+    if isUserAllowed(user_name):
         chat_id = update.message.chat_id
         user_id = update.message.from_user.id
         user_state = state.get(chat_id, MENU)
 
-        if len(regexs) == 0:
-            bot.sendMessage(chat_id, text="Nothing to manage :)")
+        allRegexs = regexs.getRegexs()
+        if len(allRegexs) == 0:
+            bot.sendMessage(chat_id, "Nothing to manage :)")
             return
-
-        data_list = list(regexs.items())
-        results = ""
-        for i in range(len(data_list)):
-            results += str(i) + ": " + data_list[i][0] + " -> " + data_list[i][1] + "\n"
-
-        bot.sendMessage(chat_id=update.message.chat_id, text=results)
+        else:
+            _showRegexs(bot, chat_id, allRegexs)
 
         if user_state == MENU:
-            context[user_id] = data_list
+            context[user_id] = allRegexs
             state[user_id] = AWAIT_MANAGE  # set the state
-            bot.sendMessage(chat_id,
-                            text="Please select id of regex to delete it or anything else to do nothing",
-                            reply_markup=ForceReply())
+            bot.sendMessage(chat_id, "Please select id of regex to delete it or anything else to do nothing", reply_markup=ForceReply())
 
 def regex(bot, update):
     """ Return the answers according to the matching text """
+    chat_id = update.message.chat_id
     text = update.message.text
-    for pattern in regexs.keys():
-        if re.search(pattern, text):
-            answer = regexs[pattern]
-            bot.sendMessage(update.message.chat_id, text=answer)
+    matchings = regexs.getMatchingRegexs(text)
+    answer = random.choice(matchings)['answer']              # if multiple matchings get a random answer
+    bot.sendMessage(chat_id, answer)

@@ -1,5 +1,4 @@
-from miau_auth import TOKEN
-import miau_constants
+from miau.constants import auth
 
 from miau.petting import petting
 from miau.help import help
@@ -17,7 +16,7 @@ from telegram.ext import InlineQueryHandler
 import logging
 
 
-updater = Updater(token=TOKEN)
+updater = Updater(token=auth.TOKEN)
 dispatcher = updater.dispatcher
 job_queue = updater.job_queue
 
@@ -51,7 +50,7 @@ dispatcher.add_handler(MessageHandler([regexs.filterInputDefineRegex], regexs.en
 # filter for manage regexs command
 dispatcher.add_handler(MessageHandler([regexs.filterInputManageRegexs], regexs.deleteRegex))
 # filter for regexs functionality
-dispatcher.add_handler(MessageHandler([regexs.filter], regexs.regex))
+dispatcher.add_handler(MessageHandler([regexs.filterPattern], regexs.regex))
 
 jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
 dispatcher.add_handler(jajejijoju_handler)
