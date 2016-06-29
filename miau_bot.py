@@ -61,11 +61,8 @@ dispatcher.add_handler(trainPlus1_hanlder)
 trainMinus1_hanlder = CommandHandler('-1', points.trainMinus1, pass_args=True)
 dispatcher.add_handler(trainMinus1_hanlder)
 
-pointsPlus1_handler = MessageHandler([points.filterPlus1], points.plus1)
-dispatcher.add_handler(pointsPlus1_handler)
-
-pointsMinus1_handler = MessageHandler([points.filterMinus1], points.minus1)
-dispatcher.add_handler(pointsMinus1_handler)
+points_handler = MessageHandler([points.filter], points.points)
+dispatcher.add_handler(points_handler)
 
 updater.start_polling()
 updater.idle()
