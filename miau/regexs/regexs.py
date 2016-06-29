@@ -133,6 +133,6 @@ def regex(bot, update):
     """ Return the answers according to the matching text """
     chat_id = update.message.chat_id
     text = update.message.text
-    matchings = regexs.getMatchingRegexs(text)
+    matchings = regexs.getBestMatchingRegexs(text)
     answer = random.choice(matchings)['answer']              # if multiple matchings get a random answer
     bot.sendMessage(chat_id, answer)
