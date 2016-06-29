@@ -10,12 +10,16 @@ class RegexsPersistence():
         self.regexs = self.__getCompiledRegexs()
 
     def addRegex(self, regex):
-        self.collection.insert_one(regex)   # Acceso a BD
+        prog = None
+        try:
+            prog = re.compile(regex['pattern'])
+            newRegex = dict(regex)
+            newRegex['compiledRegex'] = prog
+            self.regexs.append(newRegex)
 
-        newRegex = dict(regex)
-        prog = re.compile(regex['pattern'])
-        newRegex['compiledRegex'] = prog
-        self.regexs.append(newRegex)
+            self.collection.insert_one(regex)   # Acceso a BD
+        except:
+            pass    # To do: raise and send bot message.
 
     def deleteRegex(self, regex):
         self.collection.remove(regex)       # Acceso a BD
