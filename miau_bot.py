@@ -41,25 +41,25 @@ dispatcher.add_handler(weather_handler)
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
 dispatcher.add_handler(jankenpon_handler)
 
-# define regexs command
 dispatcher.add_handler(CommandHandler('regex', regexs.defineRegex))
-# manage regexs command
-dispatcher.add_handler(CommandHandler('manageregexs', regexs.manageRegexs))
-# filter for define regexs command
-dispatcher.add_handler(MessageHandler([regexs.filterInputDefineRegex], regexs.enteredRegex))
-# filter for manage regexs command
-dispatcher.add_handler(MessageHandler([regexs.filterInputManageRegexs], regexs.deleteRegex))
-# filter for regexs functionality
-dispatcher.add_handler(MessageHandler([regexs.filterPattern], regexs.regex))
 
-jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
-dispatcher.add_handler(jajejijoju_handler)
+dispatcher.add_handler(CommandHandler('manageregexs', regexs.manageRegexs))
 
 trainPlus1_hanlder = CommandHandler('+1', points.trainPlus1, pass_args=True)
 dispatcher.add_handler(trainPlus1_hanlder)
 
 trainMinus1_hanlder = CommandHandler('-1', points.trainMinus1, pass_args=True)
 dispatcher.add_handler(trainMinus1_hanlder)
+
+jajejijoju_handler = MessageHandler([jajejijoju.filter], jajejijoju.jajejijoju)
+dispatcher.add_handler(jajejijoju_handler)
+
+# filter for define regexs command
+dispatcher.add_handler(MessageHandler([regexs.filterInputDefineRegex], regexs.enteredRegex))
+# filter for manage regexs command
+dispatcher.add_handler(MessageHandler([regexs.filterInputManageRegexs], regexs.deleteRegex))
+# filter for regexs functionality
+dispatcher.add_handler(MessageHandler([regexs.filterPattern], regexs.regex))
 
 points_handler = MessageHandler([points.filter], points.points)
 dispatcher.add_handler(points_handler)
