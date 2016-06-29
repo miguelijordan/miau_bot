@@ -4,10 +4,10 @@ import math                                 # Mathematical functions
 import random                               # Generate pseudo-random numbers
 from telegram import ForceReply
 from miau.regexs import RegexsPersistence
+from miau.constants import constants
 
-MAX_MESSAGE_LENGTH = 4096
+
 MENU, AWAIT_REGEX, AWAIT_ANSWER, AWAIT_MANAGE = range(4)
-ALLOWED_USERS = ["José Miguel", "Gustavo", "Alberto", "Álvaro Manuel"]
 
 # States are saved in a dict that maps chat_id -> state
 state = dict()
