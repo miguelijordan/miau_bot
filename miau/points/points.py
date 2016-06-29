@@ -28,12 +28,12 @@ def points(bot, update):
 
 def trainPlus1(bot, update, args):
     if len(args) > 0:
-        word = ' '.join(args)
+        word = args[0].lower()
         pointsData.addPoint(word)
         bot.sendMessage(update.message.chat_id, "Miauuu :)")
 
 def trainMinus1(bot, update, args):
     if len(args) > 0:
-        word = ' '.join(args)
+        word = args[0].lower()
         pointsData.substractPoint(word)
         bot.sendMessage(update.message.chat_id, "Miauuu :(")
