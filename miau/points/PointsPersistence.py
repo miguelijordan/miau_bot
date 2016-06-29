@@ -1,4 +1,5 @@
 from pymongo import MongoClient     # Python driver for MongoDB
+from pymongo import ReturnDocument
 from miau.constants import constants
 
 class PointsPersistence():
@@ -11,14 +12,20 @@ class PointsPersistence():
     def addPoint(self, word):
         doc = self.collection.find_one_and_update({'word':word}, {'$inc': {'points': 1}}, upsert=True, return_document=ReturnDocument.AFTER) # Acceso a BD
 
-        e = self.points[self.points.index(doc)] #list(filter(lambda x : x['word'] == word, self.points))
-        e['points'] += 1
-           
+        e = list(filter(lambda x : x['word'] == word, self.points))
+        if e:
+            e[0]['points'] += 1
+        else:
+            self.points.append(doc)
+
     def substractPoint(self, word):
         doc = self.collection.find_one_and_update({'word':word}, {'$inc': {'points': -1}}, upsert=True, return_document=ReturnDocument.AFTER) # Acceso a BD
 
-        e = self.points[self.points.index(doc)] # list(filter(lambda x : x['word'] == word, self.points))
-        e['points'] -= 1
+        e = list(filter(lambda x : x['word'] == word, self.points))
+        if e:
+            e[0]['points'] -= 1
+        else:
+            self.points.append(doc)
 
     def getPoints(self):
         return list(self.collection.find().sort('word'))   # Acceso a BD
@@ -29,7 +36,7 @@ class PointsPersistence():
         if e:
            points = e[0]['points']
         return points
-        
+
     def clearPoints(self):
         self.collection.drop()
         self.points = []
