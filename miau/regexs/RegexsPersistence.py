@@ -13,13 +13,16 @@ class RegexsPersistence():
         prog = None
         try:
             prog = re.compile(regex['pattern'])
+        except:
+            raise    # To do: raise and send bot message.
+
+        if prog:    
             newRegex = dict(regex)
             newRegex['compiledRegex'] = prog
             self.regexs.append(newRegex)
 
             self.collection.insert_one(regex)   # Acceso a BD
-        except:
-            pass    # To do: raise and send bot message.
+
 
     def deleteRegex(self, regex):
         self.collection.remove(regex)       # Acceso a BD

@@ -37,6 +37,7 @@ def enteredRegex(bot, update):
     chat_id = update.message.chat_id
     user_id = update.message.from_user.id
     chat_state = state.get(user_id, MENU)
+    error = False
 
     # Check if we are waiting for input
     if chat_state == AWAIT_REGEX:
@@ -50,12 +51,17 @@ def enteredRegex(bot, update):
         pattern = context.get(user_id, None)
         answer = update.message.text
 
-        regexs.addRegex({'pattern':pattern, 'answer':answer})
+        try:
+            regexs.addRegex({'pattern':pattern, 'answer':answer})
+        except:
+            bot.sendMessage(chat_id, "Miauuu :( Error in the regex.")
+            error = True
 
         del state[user_id]
         del context[user_id]
 
-        bot.sendMessage(chat_id, "Miauuu :)")
+        if not error:
+            bot.sendMessage(chat_id, "Miauuu :)")
 
 def defineRegex(bot, update):
     """ Define a new regex -> answer """
