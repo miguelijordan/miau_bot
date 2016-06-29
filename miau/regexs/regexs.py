@@ -17,7 +17,7 @@ context = dict()
 regexs = RegexsPersistence.RegexsPersistence()
 
 def isUserAllowed(first_name):
-    return first_name in ALLOWED_USERS
+    return first_name in constants.ALLOWED_USERS
 
 def filterPattern(message):
     return regexs.getMatchingRegexs(message.text) != []
@@ -101,7 +101,7 @@ def _showRegexs(bot, chat_id, allRegexs):
     allRegexs = regexs.getRegexs()
     for regex in allRegexs:
         m = str(i) + ": " + regex['pattern'] + " -> " + regex['answer'] + "\n"
-        if len(message) + len(m) <= MAX_MESSAGE_LENGTH:
+        if len(message) + len(m) <= constants.MAX_MESSAGE_LENGTH:
             message += m
         else:
             bot.sendMessage(chat_id, message)
