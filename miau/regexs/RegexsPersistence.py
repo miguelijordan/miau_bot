@@ -35,6 +35,12 @@ class RegexsPersistence():
         matchings = list(filter(lambda x : re.search(x['compiledRegex'], text), self.regexs))
         return matchings
 
+    def getBestMatchingRegexs(self, text):
+        matchings = self.getMatchingRegexs(text)
+        maxLength = max(matchings, key=lambda x : len(re.search(x['compiledRegex'], text).group(0)))
+        bestMatchings = list(filter(lambda x : len(re.search(x['compiledRegex'], text).group(0)) == maxLength))
+        return bestMatchings
+
     def __getCompiledRegexs(self):
         regexs = self.getRegexs()
         for r in regexs:
