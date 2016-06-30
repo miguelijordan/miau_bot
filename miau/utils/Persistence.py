@@ -1,17 +1,30 @@
-import pickle   # Python object serialization
+from pymongo import MongoClient
+from miau.constants import constants
 
 class Persistence():
-    def __init__(self, data_filepath):
-        self.data_filepath = data_filepath
+    def __init__(self, collection_name):
+        self.client = MongoClient()
+        self.db = self.client[constants.MIAU_DB]
+        self.collection = self.db[collection_name]
+        self.data = self.getData()              # list in memory for efficiency
 
-    def save(self, data):
-        with open(self.data_filepath, 'wb') as file:
-            pickle.dump(data, file)
+    def getData(self):
+        return list(self.collection.find())
+        
+    def save(self, element):
+        self.collection.insert_one(element)
+        self.data.append(element)
 
-    def load(self):
-        try:
-            with open(self.data_filepath, 'rb') as file:
-                data = pickle.load(file)
-        except EOFError:
-            data = None
-        return data
+    def delete(self, element):
+        self.collection.delete_one(element)
+        if element in self.data:
+            self.data.remove(element)
+
+    def deleteAll(self, element):
+        self.collection.delete_many(element)
+        while element in self.data:
+            self.data.remove(element)
+
+    def clearData(self):
+        self.collection.drop()
+        self.data = []
