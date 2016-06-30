@@ -2,29 +2,17 @@ from pymongo import MongoClient
 from miau.constants import constants
 
 class Persistence:
-    def __init__(self, collection_name):
-        self.__client = MongoClient()
-        self.__db = self.__client[constants.MIAU_DB]
-        self.__collection = self.__db[collection_name]
-        self.__data = self.getData()              # list in memory for efficiency
-
     def getData(self):
-        return list(self.__collection.find())
+        pass
 
     def save(self, element):
-        self.__collection.insert_one(element)
-        self.__data.append(element)
+        pass
 
     def delete(self, element):
-        self.__collection.delete_one(element)
-        if element in self.data:
-            self.__data.remove(element)
+        pass
 
     def deleteAll(self, element):
-        self.__collection.delete_many(element)
-        while element in self.data:
-            self.__data.remove(element)
+        pass
 
     def clearData(self):
-        self.__collection.drop()
-        self.__data = []
+        pass
