@@ -1,17 +1,37 @@
 import pickle   # Python object serialization
 
 class BinaryPersistence(Persistence):
-    def __init__(self, data_filepath):
-        self.data_filepath = data_filepath
 
-    def save(self, data):
-        with open(self.data_filepath, 'wb') as file:
-            pickle.dump(data, file)
+    def __init__(self, dataFilepath):
+        super()
+        self.__dataFilepath = dataFilepath
 
-    def load(self):
+    def _loadData(self):
         try:
-            with open(self.data_filepath, 'rb') as file:
+            with open(self.__dataFilepath, 'rb') as file:
                 data = pickle.load(file)
         except EOFError:
-            data = None
+            data = []
         return data
+
+    def _saveData(self):
+        with open(self.__dataFilepath, 'wb') as file:
+            pickle.dump(self.getData(), file)
+
+    def save(self, element):
+        self.getData().append(element)
+        self._saveData()
+
+    def delete(self, element):
+        if element in self.getData():
+            self.getData().remove(element)
+            self._saveData()
+
+    def deleteAll(self, element):
+        while element in self.getData():
+            self.getData().remove(element)
+        self._saveData()
+
+    def clearData(self):
+        super().clearData()
+        self._saveData()
