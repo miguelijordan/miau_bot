@@ -12,11 +12,11 @@ class RegexsPersistence():
     def addRegex(self, regex):
         prog = None
         try:
-            prog = re.compile(regex['pattern'])
+            prog = re.compile(regex['pattern'], re.IGNORECASE)
         except:
             raise    # To do: raise and send bot message.
 
-        if prog:    
+        if prog:
             newRegex = dict(regex)
             newRegex['compiledRegex'] = prog
             self.regexs.append(newRegex)
