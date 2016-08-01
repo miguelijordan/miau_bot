@@ -43,7 +43,7 @@ dispatcher.add_handler(jankenpon_handler)
 
 dispatcher.add_handler(CommandHandler('regex', regexs.defineRegex))
 
-dispatcher.add_handler(CommandHandler('manageregexs', regexs.manageRegexs))
+dispatcher.add_handler(CommandHandler('manageregexs', regexs.manageRegexs, pass_args=True))
 
 trainPlus1_hanlder = CommandHandler('+1', points.trainPlus1, pass_args=True)
 dispatcher.add_handler(trainPlus1_hanlder)
