@@ -25,7 +25,7 @@ class RegexsPersistence():
 
 
     def deleteRegex(self, regex):
-        self.collection.remove(regex)       # Acceso a BD
+        self.collection.delete_many({'pattern':regex['pattern'], 'answer':regex['answer']})       # Acceso a BD
 
         elements = list(filter(lambda x : x['pattern'] == regex['pattern'] and x['answer'] == regex['answer'], self.regexs))
         for e in elements:
