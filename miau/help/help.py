@@ -5,7 +5,7 @@ Hola! Soy Miau y esto es lo que puedes hacer ahora mismo conmigo:
 /stats - Muestra información básica del gato.
 /petting - Acaricia al gato.
 /jankenpon - Juega con el gato.
-/weather - Saca el gato a pasear.
+/weather - Pregunta al gato por el tiempo que hace.
 /+1 - Entrena al gato con refuerzo positivo.
 /-1 - Entrena al gato con refuerzo negativo.
 /help - Pide ayuda al gato.
