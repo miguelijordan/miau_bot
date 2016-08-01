@@ -1,13 +1,15 @@
 from miau.regexs import RegexsPersistence
+
+from telegram.emoji import Emoji
 import datetime
 
 STATIC_STATS = [ ('ID','@miiaauu_bot'),
                  ('Name','Miau'),
-                 ('Specie','feline'),
+                 ('Specie','feline '+Emoji.CAT_FACE),
                  ('Sex','male'),
                  ('Weight','4.69 kg'),
                  ('Height','0.69 m'),
-                 ('Length','30 cm'),
+                 ('Length','30 cm '+Emoji.FACE_WITH_STUCK_OUT_TONGUE_AND_WINKING_EYE),
                  ('Owner','Josemi')]
 
 START_EXECUTION_TIME = datetime.datetime.now()
