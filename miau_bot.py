@@ -7,6 +7,7 @@ from miau.jankenpon import jankenpon
 from miau.jajejijoju import jajejijoju
 from miau.weather import weather
 from miau.regexs import regexs
+from miau.stats import stats
 
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
@@ -30,6 +31,8 @@ dispatcher.add_handler(start_handler)
 
 help_handler = CommandHandler('help', help.help)
 dispatcher.add_handler(help_handler)
+
+dispatcher.add_handler(CommandHandler('stats', stats.stats))
 
 petting_handler = CommandHandler('petting', petting.petting)
 dispatcher.add_handler(petting_handler)
