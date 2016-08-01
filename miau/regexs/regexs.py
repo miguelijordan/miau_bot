@@ -83,15 +83,15 @@ def deleteRegex(bot, update):
 
     # Check if we are waiting for input
     if chat_state == AWAIT_MANAGE:
-        allRegexs = context[user_id]
+        regexs_list = context[user_id]
         regex_id = update.message.text
         try:
             regex_id = int(regex_id)
         except ValueError:
             regex_id = -1
 
-        if regex_id >= 0 and regex_id < len(allRegexs):
-            regex = allRegexs[regex_id]
+        if regex_id >= 0 and regex_id < len(regexs_list):
+            regex = regexs_list[regex_id]
             regexs.deleteRegex(regex)
 
             bot.sendMessage(chat_id, text="Miauuu :)")
@@ -101,11 +101,10 @@ def deleteRegex(bot, update):
         del state[user_id]
         del context[user_id]
 
-def _showRegexs(bot, chat_id, allRegexs):
+def _showRegexs(bot, chat_id, regexs):
     message = ""
     i = 0
-    allRegexs = regexs.getRegexs()
-    for regex in allRegexs:
+    for regex in regexs:
         m = str(i) + ": " + regex['pattern'] + " -> " + regex['answer'] + "\n"
         if len(message) + len(m) <= constants.MAX_MESSAGE_LENGTH:
             message += m
@@ -115,23 +114,27 @@ def _showRegexs(bot, chat_id, allRegexs):
         i += 1
     bot.sendMessage(chat_id, message)
 
-def manageRegexs(bot, update):
+def manageRegexs(bot, update, args):
     """ Manage the regexs as a list """
+    chat_id = update.message.chat_id
+    user_id = update.message.from_user.id
+    user_state = state.get(chat_id, MENU)
     user_name = update.message.from_user.first_name
     if isUserAllowed(user_name):
-        chat_id = update.message.chat_id
-        user_id = update.message.from_user.id
-        user_state = state.get(chat_id, MENU)
+        if len(args) == 0:
+            regexs_list = regexs.getRegexs()                # manage all the regexs
+        else:
+            expr = ' '.join(args)
+            regexs_list = regexs.getMatchingRegexs(expr)    # manage filtered regexs
 
-        allRegexs = regexs.getRegexs()
-        if len(allRegexs) == 0:
+        if len(regexs_list) == 0:
             bot.sendMessage(chat_id, "Nothing to manage :)")
             return
         else:
-            _showRegexs(bot, chat_id, allRegexs)
+            _showRegexs(bot, chat_id, regexs_list)
 
         if user_state == MENU:
-            context[user_id] = allRegexs
+            context[user_id] = regexs_list
             state[user_id] = AWAIT_MANAGE  # set the state
             bot.sendMessage(chat_id, "Please select id of regex to delete it or anything else to do nothing", reply_markup=ForceReply())
 
