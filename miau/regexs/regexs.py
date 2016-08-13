@@ -125,7 +125,7 @@ def manageRegexs(bot, update, args):
             regexs_list = regexs.getRegexs()                # manage all the regexs
         else:
             expr = ' '.join(args)
-            regexs_list = regexs.getMatchingRegexs(expr)    # manage filtered regexs
+            regexs_list = regexs.getBestMatchingRegexs(expr)    # manage filtered regexs
 
         if len(regexs_list) == 0:
             bot.sendMessage(chat_id, "Nothing to manage :)")
