@@ -5,11 +5,11 @@ import datetime
 
 STATIC_STATS = [ ('ID','@miiaauu_bot'),
                  ('Name','Miau'),
-                 ('Specie','feline '+Emoji.CAT_FACE),
+                 ('Specie','feline ' + Emoji.CAT_FACE),
                  ('Sex','male'),
                  ('Weight','4.69 kg'),
-                 ('Height','0.69 m'),
-                 ('Length','30 cm '+Emoji.FACE_WITH_STUCK_OUT_TONGUE_AND_WINKING_EYE),
+                 ('Height','0.5 m'),
+                 ('Length','30 cm ' + Emoji.FACE_WITH_STUCK_OUT_TONGUE_AND_WINKING_EYE),
                  ('Owner','Josemi')]
 
 START_EXECUTION_TIME = datetime.datetime.now()
@@ -17,8 +17,8 @@ START_EXECUTION_TIME = datetime.datetime.now()
 def getAge():
     now = datetime.datetime.now()
     age = now - START_EXECUTION_TIME # seconds
-    days, remainder = divmod(age.seconds, 86400)
-    hours, remainder = divmod(remainder, 3600)
+    days = age.days
+    hours, remainder = divmod(age.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     return str(days) + "d " + str(hours) + "h " + str(minutes) + "m " + str(seconds) + "s."
 
@@ -34,7 +34,7 @@ def formatStats(stats):
 
 def stats(bot, update):
     stats = [] + STATIC_STATS
-    stats.append(('CP (Conversation Power)',str(getConversationPower())+' regexs'))
+    stats.append(('CP (Conversation Power)',str(getConversationPower())))
     stats.append(('Age',getAge()))
 
     message = formatStats(stats)
