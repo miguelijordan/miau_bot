@@ -40,9 +40,11 @@ class RegexsPersistence():
 
     def getBestMatchingRegexs(self, text):
         matchings = self.getMatchingRegexs(text)
-        maxMatching = max(matchings, key=lambda x : len(re.search(x['compiledRegex'], text).group(0)))
-        maxLength = len(re.search(maxMatching['compiledRegex'], text).group(0))
-        bestMatchings = list(filter(lambda x : len(re.search(x['compiledRegex'], text).group(0)) == maxLength, matchings))
+        bestMatchings = []
+        if len(matchings) > 0:
+            maxMatching = max(matchings, key=lambda x : len(re.search(x['compiledRegex'], text).group(0)))
+            maxLength = len(re.search(maxMatching['compiledRegex'], text).group(0))
+            bestMatchings = list(filter(lambda x : len(re.search(x['compiledRegex'], text).group(0)) == maxLength, matchings))
         return bestMatchings
 
     def __getCompiledRegexs(self):
