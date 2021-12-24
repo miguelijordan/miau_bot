@@ -5,7 +5,7 @@ from miau.help import help
 from miau.points import points
 from miau.jankenpon import jankenpon
 from miau.jajejijoju import jajejijoju
-from miau.weather import weather
+#from miau.weather import weather
 from miau.regexs import regexs
 from miau.stats import stats
 
@@ -37,8 +37,8 @@ dispatcher.add_handler(CommandHandler('stats', stats.stats))
 petting_handler = CommandHandler('petting', petting.petting)
 dispatcher.add_handler(petting_handler)
 
-weather_handler = CommandHandler('weather', weather.weather)
-dispatcher.add_handler(weather_handler)
+#weather_handler = CommandHandler('weather', weather.weather)
+#dispatcher.add_handler(weather_handler)
 #job_queue.put(weather.weather_timed, 86400, next_t=22500)
 
 jankenpon_handler = CommandHandler('jankenpon', jankenpon.jankenpon, pass_args=True)
